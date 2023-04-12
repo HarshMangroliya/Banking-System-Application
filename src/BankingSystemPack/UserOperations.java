@@ -270,9 +270,7 @@ public class UserOperations {
 
     public static boolean logout() {
 
-        if(UserOperations.Aactive.getUserType() == userType.ADMIN)
             UserOperations.Aactive = null;
-        else
             UserOperations.Cactive = null;
         return true;
     }

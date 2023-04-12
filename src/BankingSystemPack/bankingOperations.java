@@ -21,12 +21,13 @@ public class bankingOperations implements Approve_Loan {
         System.out.print("Enter Amount : ");
         record.amount = UserOperations.scanner.nextDouble();
 
-        System.out.println("Enter Amount : "+record.amount+" "+record.amount+" "+sender.getBalance());
+        //System.out.println("Enter Amount : "+record.amount+" "+record.amount+" "+sender.getBalance());
 
         boolean accFound = false;
 
         if(record.amount <= sender.getBalance()){
-            System.out.print("Enter Amount : "+record.amount);
+
+            //System.out.print("Enter Amount : "+record.amount);
 
 
             for (Map.Entry<String, User> entry : UserOperations.users.entrySet())
@@ -40,8 +41,8 @@ public class bankingOperations implements Approve_Loan {
                         TransactionActorRecord debitFrom = new TransactionActorRecord(record,userType.SENDER);
                         TransactionActorRecord creditTo = new TransactionActorRecord(record, userType.RECEIVER);
 
-                        debitFrom.setRemainingBalance(receiver.updateBalance(record.amount,true));
-                        creditTo.setRemainingBalance(sender.updateBalance(record.amount, false));
+                        debitFrom.setRemainingBalance(sender.updateBalance(record.amount,'-'));
+                        creditTo.setRemainingBalance(receiver.updateBalance(record.amount, '+'));
                         record.status = "Successful";
 
                         transactions.add(debitFrom);
@@ -56,7 +57,10 @@ public class bankingOperations implements Approve_Loan {
             }
             if(!accFound) {
                 System.out.println("Receiver account not found");
-                record.status = "Failed- Receiver account not found";
+                record.status = "Failed - Receiver account not found";
+                TransactionActorRecord debitFrom = new TransactionActorRecord(record,userType.SENDER);
+                debitFrom.setRemainingBalance(sender.getBalance());
+                transactions.add(debitFrom);
             }
 
         }
@@ -84,7 +88,20 @@ public class bankingOperations implements Approve_Loan {
         else{
             System.out.println("Loan approved");
             double approvedLoan = cactive.getBalance() * 1.5;
-            cactive.updateBalance(approvedLoan,true);
+
+            Transaction tRecord = new Transaction(TransactionID++);
+
+            tRecord.amount = approvedLoan;
+            tRecord.debitFrom = 8084; //branch bank account number
+            tRecord.creditTo = cactive.getAccNo();
+            tRecord.status = "Successful";
+
+
+            TransactionActorRecord creditTo = new TransactionActorRecord(tRecord, userType.RECEIVER);
+            creditTo.setRemainingBalance(cactive.updateBalance(tRecord.amount, '+'));
+
+            transactions.add(creditTo);
+
             record = new LoanRecord(cactive,UserOperations.LoanNo++,approvedLoan,"Loan approved");
         }
         loanRecords.add(record);
@@ -101,11 +118,63 @@ public class bankingOperations implements Approve_Loan {
         else{
             System.out.println("Loan approved");
             double approvedLoan = cactive.getBalance() * 3;
-            cactive.updateBalance(approvedLoan,true);
+
+            Transaction tRecord = new Transaction(TransactionID++);
+
+            tRecord.amount = approvedLoan;
+            tRecord.debitFrom = 8084; //branch bank account number
+            tRecord.creditTo = cactive.getAccNo();
+            tRecord.status = "Successful";
+
+
+            TransactionActorRecord creditTo = new TransactionActorRecord(tRecord, userType.RECEIVER);
+            creditTo.setRemainingBalance(cactive.updateBalance(tRecord.amount, '+'));
+
+            transactions.add(creditTo);
+
             record = new LoanRecord(cactive,UserOperations.LoanNo++,approvedLoan,"Loan approved");
         }
 
         loanRecords.add(record);
 
     }
+
+
+    public void TransactionHistory(Customer cactive){
+
+        int accNo = cactive.getAccNo();
+
+        System.out.println("Current account balance is : "+cactive.getBalance());
+        System.out.println("Account transactions : ");
+        System.out.println("TransID   Debitfrom   CreditTo  Amount   RemainingBalance   Status ");
+
+
+        for(TransactionActorRecord i : transactions){
+            if(i.rec.debitFrom == accNo && i.type == userType.SENDER)
+                i.printRecord();
+
+
+            if(i.rec.creditTo == accNo && i.type == userType.RECEIVER)
+                i.printRecord();
+
+        }
+
+
+
+
+    }
+
+
+    public void ShowLoanApprovals(Customer cactive){
+        int bankAcc = cactive.getAccNo();
+        System.out.println("loanNumber"+"  "+"approvedAmt"+"  "+"status");
+        for(LoanRecord i: loanRecords){
+            if(bankAcc == i.cust.getAccNo())
+                i.printRecord();
+        }
+
+    }
+
+
+
 }

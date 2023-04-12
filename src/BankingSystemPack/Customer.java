@@ -24,8 +24,8 @@ public class Customer extends User implements Calculate_interest{
 
     public accType getAccType(){return this.acc_type;}
 
-    public double updateBalance(double amt,boolean ops){
-        if(ops)
+    public double updateBalance(double amt,char ops){
+        if(ops == '+')
             this.balance = this.balance + amt;
         else
             this.balance = this.balance - amt;

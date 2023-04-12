@@ -4,8 +4,8 @@ public class Main {
     public static void main(String[] args) {
 
         UserOperations.users.put("a", new Admin("a", "a", "admmin bro",userType.ADMIN));
-        UserOperations.users.put("cs", new Customer("cs", "cs", "saving cutomer",userType.CUSTOMER,accType.SAVING,500000));
-        UserOperations.users.put("cc", new Customer("cc", "cs", "currect customer",userType.CUSTOMER,accType.CURRENT,10000002));
+        UserOperations.users.put("cs", new Customer("cs", "cs", "saving cutomer",userType.CUSTOMER,accType.SAVING,250000));
+        UserOperations.users.put("cc", new Customer("cc", "cs", "currect customer",userType.CUSTOMER,accType.CURRENT,600000));
 
         //commetn
 
@@ -115,11 +115,11 @@ public class Main {
                                         UserOperations.bank.TransferMoney(UserOperations.Cactive);
                                         break;
                                     }
-                                    /*
+
                                     case 2: {
-                                        RetailStore.cancelPurchase();
+                                        UserOperations.bank.TransactionHistory(UserOperations.Cactive);
                                         break;
-                                    }*/
+                                    }
 
                                     case 3: {
 
@@ -130,12 +130,11 @@ public class Main {
 
                                         break;
                                     }
-                                        /*
+
                                     case 4: {
-                                        System.out.println("Your wallet balance is : " + UserOperations.PUser.getBalance());
-                                        RetailStore.purchaseDetail();
+                                        UserOperations.bank.ShowLoanApprovals(UserOperations.Cactive);
                                         break;
-                                    }*/
+                                    }
 
                                     case 5: {
                                         if (UserOperations.logout()) {

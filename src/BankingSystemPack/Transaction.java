@@ -1,7 +1,7 @@
 package BankingSystemPack;
 
 public class Transaction {
-    private int transactionID;
+    protected int transactionID;
     protected int debitFrom;
     protected int creditTo;
     protected double amount;

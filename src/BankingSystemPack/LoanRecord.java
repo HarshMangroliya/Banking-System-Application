@@ -12,4 +12,9 @@ public class LoanRecord {
         this.approvedAmt = approvedAmt;
         this.status = status;
     }
+
+    public void printRecord(){
+        System.out.println(loanNumber+"   "+approvedAmt+"   "+status);
+    }
+
 }
