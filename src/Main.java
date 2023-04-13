@@ -39,11 +39,11 @@ public class Main {
                                 // This menu is wrapped inside an infinite while loop
                                 System.out.println("\nWelcome Admin, "+UserOperations.Aactive.getFullname());
                                 //RetailStore.adminDisplayProducts();
-                                System.out.println("\n1. Add Product");
-                                System.out.println("2. Calculate fine");
-                                System.out.println("3. Calculate Total profit");
-                                System.out.println("4. Set discount Rate");
-                                System.out.println("5. Set Fine rate Rate");
+                                System.out.println("\n1. ");
+                                System.out.println("2. ");
+                                System.out.println("3. ");
+                                System.out.println("4. ");
+                                System.out.println("5. ");
                                 System.out.println("6. Logout");
                                 System.out.print("Enter your choice: ");
                                 choice = UserOperations.scanner.nextInt();
