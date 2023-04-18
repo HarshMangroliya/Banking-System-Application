@@ -42,10 +42,10 @@ public class Main {
                                 //RetailStore.adminDisplayProducts();
                                 System.out.println("\n1. Show account details");
                                 System.out.println("2. TransferMoney");
-                                System.out.println("3. ");
-                                System.out.println("4. ");
-                                System.out.println("5. ");
-                                System.out.println("6. Logout");
+                                System.out.println("3. Add money");
+                                System.out.println("4. Withdraw Money");
+                                //System.out.println("5. ");
+                                System.out.println("5. Logout");
                                 System.out.print("Enter your choice: ");
                                 choice = UserOperations.scanner.nextInt();
 
@@ -61,22 +61,23 @@ public class Main {
                                         UserOperations.bank.adminTransferMoney();
                                         break;
                                     }
-                                    /*
+
                                     case 3: {
-                                        RetailStore.calTotalProfit();
+                                        UserOperations.bank.addMoney();
                                         break;
                                     }
 
                                     case 4:{
-                                        RetailStore.setDiscountRate();
+                                        UserOperations.bank.WithdrawMoney();
                                         break;
                                     }
+                                    /*
                                     case 5:{
                                         RetailStore.setFineRate();
                                         break;
                                     }
                                     */
-                                    case 6: {
+                                    case 5: {
                                         if (UserOperations.logout()) {
                                             System.out.println("\nUser logged out successfully.");
                                             f2 = false;

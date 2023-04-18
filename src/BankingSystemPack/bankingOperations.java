@@ -86,7 +86,7 @@ public class bankingOperations implements Approve_Loan {
             Transaction tRecord = new Transaction(TransactionID++);
 
             tRecord.amount = approvedLoan;
-            tRecord.debitFrom = 8084; //branch bank account number
+            tRecord.debitFrom = 8888; //branch bank account number
             tRecord.creditTo = cactive.getAccNo();
             tRecord.status = "Successful";
 
@@ -115,7 +115,7 @@ public class bankingOperations implements Approve_Loan {
             Transaction tRecord = new Transaction(TransactionID++);
 
             tRecord.amount = approvedLoan;
-            tRecord.debitFrom = 8084; //branch bank account number
+            tRecord.debitFrom = 8888; //branch bank account number
             tRecord.creditTo = cactive.getAccNo();
             tRecord.status = "Successful";
 
@@ -250,9 +250,9 @@ public class bankingOperations implements Approve_Loan {
 
                 TransactionActorRecord creditRec = new TransactionActorRecord(record, userType.RECEIVER);
                 creditRec.setRemainingBalance(creditTo.getBalance());
-                record.status = "Receiver account not found";
+                record.status = "Sender account not found";
 
-                System.out.println("Receiver account not found");
+                System.out.println("Sender account not found");
                 transactions.add(creditRec);
 
             } else {
@@ -269,6 +269,125 @@ public class bankingOperations implements Approve_Loan {
             System.out.println("You dont have Access to this module");
     }
 
+    public void addMoney() {
+        if (UserOperations.Aactive.authorised) {
+            Transaction record = new Transaction(TransactionID++);
+
+            record.debitFrom = 8888;
+
+            System.out.print("Enter Credit to Account number : ");
+            record.creditTo = UserOperations.scanner.nextInt();
+
+            System.out.print("Enter Amount : ");
+            record.amount = UserOperations.scanner.nextDouble();
 
 
+            Customer creditTo = null;
+
+            for (Map.Entry<String, User> entry : UserOperations.users.entrySet()) {
+                if (entry.getValue().getUserType() == userType.CUSTOMER) {
+
+                    Customer customer = (Customer) entry.getValue();
+
+                    if (customer.getAccNo() == record.creditTo) {
+                        creditTo = customer;
+                        break;
+                    }
+                }
+
+            }
+
+            if (creditTo != null) {
+
+                TransactionActorRecord creditRec = new TransactionActorRecord(record, userType.RECEIVER);
+
+                creditRec.setRemainingBalance(creditTo.updateBalance(record.amount, '+'));
+
+                record.status = "Successful";
+
+                System.out.println("Money added successfully");
+
+                transactions.add(creditRec);
+
+            }
+            else {
+
+                TransactionActorRecord Rec = new TransactionActorRecord(record, userType.NONE);
+                Rec.setRemainingBalance(0);
+                record.status = "Receiver account not found";
+
+                System.out.println("Receiver account not found");
+                transactions.add(Rec);
+
+            }
+        }
+        else
+            System.out.println("You dont have Access to this module");
+    }
+
+    public void WithdrawMoney() {
+        if (UserOperations.Aactive.authorised) {
+            Transaction record = new Transaction(TransactionID++);
+
+            System.out.print("Enter Debit From Account number : ");
+            record.debitFrom = UserOperations.scanner.nextInt();
+
+            record.creditTo = 8888;
+
+            System.out.print("Enter Amount : ");
+            record.amount = UserOperations.scanner.nextDouble();
+
+            Customer debitFrom = null;
+
+            for (Map.Entry<String, User> entry : UserOperations.users.entrySet()) {
+                if (entry.getValue().getUserType() == userType.CUSTOMER) {
+
+                    Customer customer = (Customer) entry.getValue();
+
+                    if (customer.getAccNo() == record.debitFrom) {
+                        debitFrom = customer;
+                        break;
+                    }
+
+                }
+
+            }
+
+            if (debitFrom != null) {
+
+                TransactionActorRecord debitRec = new TransactionActorRecord(record, userType.SENDER);
+
+                if (debitFrom.getBalance() >= record.amount) {
+
+                    debitRec.setRemainingBalance(debitFrom.updateBalance(record.amount, '-'));
+
+                    record.status = "money withdrawal Successful";
+
+                    System.out.println("Money withdraw successfully");
+
+                }
+                else {
+
+                    debitRec.setRemainingBalance(debitFrom.getBalance());
+
+                    record.status = "Sender : insufficient fund";
+                    System.out.println("Sender : insufficient fund");
+                }
+
+                transactions.add(debitRec);
+
+
+            }
+            else {
+                TransactionActorRecord TArec = new TransactionActorRecord(record, userType.NONE);
+                TArec.setRemainingBalance(0);
+                record.status = "withdrawal acc not found";
+
+                System.out.println("Withdrawal acc not found");
+                transactions.add(TArec);
+
+            }
+        } else
+            System.out.println("You dont have Access to this module");
+    }
 }
