@@ -11,6 +11,7 @@ public class Customer extends User implements Calculate_interest{
         this.acc_type = atype;
         this.accNo = ++UserOperations.AccountNo;
     }
+
     public Customer(String username, String password, String name, userType utype,accType atype,double balance){
         super(username,password,name,utype);
         this.acc_type = atype;
@@ -38,4 +39,7 @@ public class Customer extends User implements Calculate_interest{
     }
 
 
+    public void printAccRecord() {
+        System.out.println(this.getAccNo()+" "+this.getUsername()+" "+this.balance+" "+this.acc_type);
+    }
 }

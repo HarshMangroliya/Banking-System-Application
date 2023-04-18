@@ -4,5 +4,6 @@ public enum userType {
     ADMIN,
     CUSTOMER,
     SENDER,
-    RECEIVER
+    RECEIVER,
+    NONE
 }

@@ -162,7 +162,7 @@ public class UserOperations {
                         key = scanner.next();
 
                         if(key.equals(AdminKey)){
-                            UserOperations.users.put(username, new Admin(username, password1, fullname,userType.ADMIN));
+                            UserOperations.users.put(username, new Admin(username, password1, fullname,userType.ADMIN,false));
                             System.out.println("\nAdmin registered successfully.");
                             break;
                         }

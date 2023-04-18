@@ -3,8 +3,9 @@ import BankingSystemPack.Customer;
 public class Main {
     public static void main(String[] args) {
 
-        UserOperations.users.put("a", new Admin("a", "a", "admmin bro",userType.ADMIN));
-        UserOperations.users.put("cs", new Customer("cs", "cs", "saving cutomer",userType.CUSTOMER,accType.SAVING,250000));
+        UserOperations.users.put("aa", new Admin("aa", "a", "Aadmmin bro",userType.ADMIN,true));
+        UserOperations.users.put("ua", new Admin("ua", "a", "Uadmmin bro",userType.ADMIN,false));
+        UserOperations.users.put("cs", new Customer("cs", "cs", "saving customer",userType.CUSTOMER,accType.SAVING,250000));
         UserOperations.users.put("cc", new Customer("cc", "cs", "currect customer",userType.CUSTOMER,accType.CURRENT,600000));
 
         //commetn
@@ -31,7 +32,7 @@ public class Main {
                         System.out.println("---------------------------------------------------------------------");
                         if(UserOperations.Aactive != null){
                             //Admin
-                            //UserOperations.PAdmin = (Admin) UserOperations.active;
+
                             boolean f2 = true;
                             while(f2){
 
@@ -39,8 +40,8 @@ public class Main {
                                 // This menu is wrapped inside an infinite while loop
                                 System.out.println("\nWelcome Admin, "+UserOperations.Aactive.getFullname());
                                 //RetailStore.adminDisplayProducts();
-                                System.out.println("\n1. ");
-                                System.out.println("2. ");
+                                System.out.println("\n1. Show account details");
+                                System.out.println("2. TransferMoney");
                                 System.out.println("3. ");
                                 System.out.println("4. ");
                                 System.out.println("5. ");
@@ -50,16 +51,17 @@ public class Main {
 
                                 switch (choice) {
 
-                                    /*case 1: {
-                                        RetailStore.addProduct();
+                                    case 1: {
+                                        UserOperations.bank.showAccountDetail();
                                         break;
                                     }
+
 
                                     case 2: {
-                                        RetailStore.calculateFine();
+                                        UserOperations.bank.adminTransferMoney();
                                         break;
                                     }
-
+                                    /*
                                     case 3: {
                                         RetailStore.calTotalProfit();
                                         break;
