@@ -16,8 +16,16 @@ public class Transaction implements Serializable {
     }
 
 
-    Transaction(int transactionID,int a){
+    Transaction(int transactionID,int debitFrom,int creditTo,double amount,transactionMessage status){
+        UserOperations.bank.TransactionID++;
         this.transactionID = transactionID;
+        this.debitFrom = debitFrom;
+        this.creditTo = creditTo;
+        this.amount = amount;
+        this.status = status;
+
+
+
     }
 
 

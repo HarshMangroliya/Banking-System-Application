@@ -20,7 +20,7 @@ public class UserOperations {
     public static bankingOperations bank = new bankingOperations();
 
     public static void writeUser(){
-        System.out.println("Writing CSV files call");
+        System.out.println("Writing data to CSV files");
 
         //Writing users to users.csv
         for (Map.Entry<String, User> entry : UserOperations.users.entrySet()) {
@@ -28,7 +28,7 @@ public class UserOperations {
             User user = entry.getValue();
             writeUserToCSV(user);
         }
-        System.out.println("USer CSV file written successfully!");
+        System.out.println("USers.csv file written successfully!");
 
         //Writing transactions to transactions.csv
         FileWriter writer = null;
@@ -64,6 +64,7 @@ public class UserOperations {
                 System.out.println("Error closing file Transaction writer: " + e.getMessage());
             }
         }
+        System.out.println("Transactions.csv file written successfully!");
 
 
     }
@@ -192,7 +193,6 @@ public class UserOperations {
 
     }
 
-
     public static void CSVReader(){
 
         //Reading User from the user.csv
@@ -258,6 +258,98 @@ public class UserOperations {
                 System.out.println("File deleted successfully");
             } else {
                 System.out.println("Failed to delete the file");
+            }
+
+        }
+
+        //Reading User from the transactions.csv
+        try {
+
+            File file = new File("transactions.csv");
+
+            if (!file.exists()) {
+                try {
+                    // Create a new file
+                    file.createNewFile();
+                    System.out.println("File created successfully.");
+                } catch (IOException e) {
+                    System.out.println("An error occurred while creating the file: " + e.getMessage());
+                }
+            }
+
+            BufferedReader br = new BufferedReader(new FileReader("transactions.csv"));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                transactionMessage msg = transactionMessage.valueOf(data[0]);
+
+                int transactionID = Integer.parseInt(data[1]);
+                int debitFrom = Integer.parseInt(data[2]);
+                int creditTo = Integer.parseInt(data[3]);
+                double amount = Double.parseDouble(data[4]);
+
+                Transaction rec = new Transaction(transactionID,debitFrom,creditTo,amount,msg);
+
+                if(msg == transactionMessage.TransferSuccessful || msg == transactionMessage.InsufficientFund){
+                    userType sender = userType.valueOf(data[5]);
+                    double senderBalance = Double.parseDouble(data[6]);
+                    TransactionActorRecord obj = new TransactionActorRecord(rec,sender);
+                    obj.setRemainingBalance(senderBalance);
+                    bank.transactions.add(obj);
+
+                    userType receiver = userType.valueOf(data[7]);
+                    double receiverBalance = Double.parseDouble(data[8]);
+                    TransactionActorRecord obj2 = new TransactionActorRecord(rec,receiver);
+                    obj.setRemainingBalance(receiverBalance);
+                    bank.transactions.add(obj2);
+
+                }
+                else {
+                    userType actor = userType.valueOf(data[5]);
+                    double remainingBalance = Double.parseDouble(data[6]);
+                    TransactionActorRecord obj = new TransactionActorRecord(rec,actor);
+                    obj.setRemainingBalance(remainingBalance);
+                    bank.transactions.add(obj);
+                }
+
+            }
+            System.out.println("CSV file read successfully!");
+
+            //close the file
+            {try {
+                if (br != null) {
+                    br.close();
+                }
+            }
+            catch (IOException e) {
+                System.out.println("Error closing file reader: " + e.getMessage());
+            }
+            }
+
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("CSV file not found: " + e.getMessage());
+
+        }
+        catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+        finally {
+            File file = new File("users.csv");
+            if (file.delete()) {
+                System.out.println("Users.csv File deleted successfully");
+            } else {
+                System.out.println("User.csv Failed to delete the file");
+            }
+
+            file = new File("transactions.csv");
+            if (file.delete()) {
+                System.out.println("transactions.csv File deleted successfully");
+            } else {
+                System.out.println("transactions.csv Failed to delete the file");
             }
 
         }
