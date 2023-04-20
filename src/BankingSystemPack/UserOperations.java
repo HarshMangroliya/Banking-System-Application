@@ -174,9 +174,9 @@ public class UserOperations {
             writer.append(String.valueOf(TARecord1.rec.amount));
             writer.append(",");
 
-            writer.append(TARecord2.type.toString());
+            writer.append(TARecord1.type.toString());
             writer.append(",");
-            writer.append(String.valueOf(TARecord2.remainingBalance));
+            writer.append(String.valueOf(TARecord1.remainingBalance));
             writer.append(",");
 
             writer.append(TARecord2.type.toString());
