@@ -1,7 +1,10 @@
 package BankingSystemPack;
 
+import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+
 
 public class UserOperations {
 
@@ -12,10 +15,12 @@ public class UserOperations {
     public static Admin Aactive;
 
     private static String AdminKey = "Admin@123";
-    public static int AccountNo = 10000;
+    public static int AccountNo = 1000;
     public static int LoanNo = 100;
 
     public static bankingOperations bank = new bankingOperations();
+
+
 
     public static void register() {
 
@@ -161,8 +166,9 @@ public class UserOperations {
                         String key;
                         key = scanner.next();
 
-                        if(key.equals(AdminKey)){
-                            UserOperations.users.put(username, new Admin(username, password1, fullname,userType.ADMIN,false));
+                        String adminKey = "Admin@123";
+                        if(key.equals(adminKey)){
+                            UserOperations.users.put(username, new Admin(username, password1, fullname,userType.ADMIN,0));
                             System.out.println("\nAdmin registered successfully.");
                             break;
                         }

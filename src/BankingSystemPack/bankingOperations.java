@@ -1,12 +1,17 @@
 package BankingSystemPack;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class bankingOperations implements Approve_Loan {
+public class bankingOperations implements Approve_Loan, Serializable {
 
     public static ArrayList<TransactionActorRecord> transactions = new ArrayList<>();
     public static ArrayList<LoanRecord> loanRecords = new ArrayList<>();
-    int TransactionID = 1000;
+    int TransactionID ;
+
+    bankingOperations(){
+        this.TransactionID = 1000;
+    }
 
     public void TransferMoney(Customer sender) {
         System.out.println("Your account balance is : " + sender.getBalance());
@@ -88,7 +93,7 @@ public class bankingOperations implements Approve_Loan {
             tRecord.amount = approvedLoan;
             tRecord.debitFrom = 8888; //branch bank account number
             tRecord.creditTo = cactive.getAccNo();
-            tRecord.status = "Successful";
+            tRecord.status = " Loan approved Successful";
 
 
             TransactionActorRecord creditTo = new TransactionActorRecord(tRecord, userType.RECEIVER);
@@ -117,7 +122,7 @@ public class bankingOperations implements Approve_Loan {
             tRecord.amount = approvedLoan;
             tRecord.debitFrom = 8888; //branch bank account number
             tRecord.creditTo = cactive.getAccNo();
-            tRecord.status = "Successful";
+            tRecord.status = "Loan approved Successful";
 
 
             TransactionActorRecord creditTo = new TransactionActorRecord(tRecord, userType.RECEIVER);
@@ -179,7 +184,7 @@ public class bankingOperations implements Approve_Loan {
 
     public void adminTransferMoney(){
 
-        if (UserOperations.Aactive.authorised) {
+        if (UserOperations.Aactive.authorised == 1) {
             Transaction record = new Transaction(TransactionID++);
 
             System.out.print("Enter Debit From Account number : ");
@@ -270,7 +275,7 @@ public class bankingOperations implements Approve_Loan {
     }
 
     public void addMoney() {
-        if (UserOperations.Aactive.authorised) {
+        if (UserOperations.Aactive.authorised == 1) {
             Transaction record = new Transaction(TransactionID++);
 
             record.debitFrom = 8888;
@@ -326,7 +331,7 @@ public class bankingOperations implements Approve_Loan {
     }
 
     public void WithdrawMoney() {
-        if (UserOperations.Aactive.authorised) {
+        if (UserOperations.Aactive.authorised == 1) {
             Transaction record = new Transaction(TransactionID++);
 
             System.out.print("Enter Debit From Account number : ");

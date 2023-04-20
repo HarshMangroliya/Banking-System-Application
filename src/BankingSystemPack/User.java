@@ -6,6 +6,10 @@ public class User {
     private String name;
     private userType userType;
 
+    User(){
+        super();
+    }
+
     User(String username, String password, String name, userType utype) {
         this.username = username;
         this.password = password;

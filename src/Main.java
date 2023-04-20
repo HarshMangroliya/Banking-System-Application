@@ -1,14 +1,13 @@
 import BankingSystemPack.*;
-import BankingSystemPack.Customer;
+
 public class Main {
     public static void main(String[] args) {
 
-        UserOperations.users.put("aa", new Admin("aa", "a", "Aadmmin bro",userType.ADMIN,true));
-        UserOperations.users.put("ua", new Admin("ua", "a", "Uadmmin bro",userType.ADMIN,false));
+        UserOperations.users.put("aa", new Admin("aa", "aa", "Aadmmin bro",userType.ADMIN,1));
+        UserOperations.users.put("ua", new Admin("ua", "ua", "Uadmmin bro",userType.ADMIN,0));
         UserOperations.users.put("cs", new Customer("cs", "cs", "saving customer",userType.CUSTOMER,accType.SAVING,250000));
-        UserOperations.users.put("cc", new Customer("cc", "cs", "currect customer",userType.CUSTOMER,accType.CURRENT,600000));
+        UserOperations.users.put("cc", new Customer("cc", "cc", "currect customer",userType.CUSTOMER,accType.CURRENT,600000));
 
-        //commetn
 
         boolean f1 = true;
         while(f1) {
@@ -169,6 +168,7 @@ public class Main {
                 case 4:
                     f1 = false;
                     System.out.println("\nProgram exit successful.");
+
                     break;
                 default:
                     System.out.println("\nInvalid choice.");

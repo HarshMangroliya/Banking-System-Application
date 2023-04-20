@@ -1,6 +1,8 @@
 package BankingSystemPack;
 
-public class Transaction {
+import java.io.Serializable;
+
+public class Transaction implements Serializable {
     protected int transactionID;
     protected int debitFrom;
     protected int creditTo;

@@ -1,6 +1,8 @@
 package BankingSystemPack;
 
-public class TransactionActorRecord {
+import java.io.Serializable;
+
+public class TransactionActorRecord implements Serializable {
     protected Transaction rec;
     protected double remainingBalance;
     protected userType type;

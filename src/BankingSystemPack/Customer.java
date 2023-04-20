@@ -1,6 +1,8 @@
 package BankingSystemPack;
 
-public class Customer extends User implements Calculate_interest{
+import java.io.Serializable;
+
+public class Customer extends User implements Calculate_interest, Serializable {
 
     private accType acc_type;
     private int accNo;

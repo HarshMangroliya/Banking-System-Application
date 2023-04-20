@@ -1,6 +1,8 @@
 package BankingSystemPack;
 
-public class LoanRecord {
+import java.io.Serializable;
+
+public class LoanRecord implements Serializable {
     protected Customer cust;
     protected int loanNumber;
     protected double approvedAmt;
