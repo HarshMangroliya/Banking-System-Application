@@ -195,7 +195,7 @@ public class UserOperations {
 
     public static void CSVReader(){
 
-        //Reading User from the user.csv
+        //Reading from the user.csv
         try {
 
             File file = new File("users.csv");
@@ -231,7 +231,7 @@ public class UserOperations {
                     users.put(username, new Customer(username, password, name, userType, accType, balance,accNo));
                 }
             }
-            System.out.println("CSV file read successfully!");
+            System.out.println("users CSV file read successfully!");
 
             //close the file
             {try {
@@ -246,7 +246,7 @@ public class UserOperations {
 
         }
         catch (FileNotFoundException e) {
-            System.out.println("CSV file not found: " + e.getMessage());
+            System.out.println("users CSV file not found: " + e.getMessage());
 
         }
         catch (IOException e) {
@@ -255,14 +255,14 @@ public class UserOperations {
         finally {
             File file = new File("users.csv");
             if (file.delete()) {
-                System.out.println("File deleted successfully");
+                System.out.println("users.csv File deleted successfully");
             } else {
-                System.out.println("Failed to delete the file");
+                System.out.println("users.csv Failed to delete the file");
             }
 
         }
 
-        //Reading User from the transactions.csv
+        //Reading from the transactions.csv
         try {
 
             File file = new File("transactions.csv");
@@ -331,21 +331,15 @@ public class UserOperations {
 
         }
         catch (FileNotFoundException e) {
-            System.out.println("CSV file not found: " + e.getMessage());
+            System.out.println("transactions CSV file not found: " + e.getMessage());
 
         }
         catch (IOException e) {
-            System.out.println("Error reading CSV file: " + e.getMessage());
+            System.out.println("Error reading transactions CSV file: " + e.getMessage());
         }
         finally {
-            File file = new File("users.csv");
-            if (file.delete()) {
-                System.out.println("Users.csv File deleted successfully");
-            } else {
-                System.out.println("User.csv Failed to delete the file");
-            }
+            File file = new File("transactions.csv");
 
-            file = new File("transactions.csv");
             if (file.delete()) {
                 System.out.println("transactions.csv File deleted successfully");
             } else {
@@ -353,9 +347,6 @@ public class UserOperations {
             }
 
         }
-
-
-
 
     }
 
