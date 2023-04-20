@@ -7,9 +7,16 @@ public class Transaction implements Serializable {
     protected int debitFrom;
     protected int creditTo;
     protected double amount;
-    protected String status;
+    protected transactionMessage status;
 
-    Transaction(int transactionID){
+    Transaction(){
+
+        this.transactionID = UserOperations.bank.TransactionID++;
+
+    }
+
+
+    Transaction(int transactionID,int a){
         this.transactionID = transactionID;
     }
 

@@ -16,7 +16,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
     public void TransferMoney(Customer sender) {
         System.out.println("Your account balance is : " + sender.getBalance());
 
-        Transaction record = new Transaction(TransactionID++);
+        Transaction record = new Transaction();
         record.debitFrom = sender.getAccNo();
 
         System.out.print("Enter Account number : ");
@@ -46,7 +46,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
                         debitFrom.setRemainingBalance(sender.updateBalance(record.amount, '-'));
                         creditTo.setRemainingBalance(receiver.updateBalance(record.amount, '+'));
-                        record.status = "Successful";
+                        record.status = transactionMessage.TransferSuccessful;
 
                         transactions.add(debitFrom);
                         transactions.add(creditTo);
@@ -60,14 +60,14 @@ public class bankingOperations implements Approve_Loan, Serializable {
             }
             if (!accFound) {
                 System.out.println("Receiver account not found");
-                record.status = "Failed - Receiver account not found";
+                record.status = transactionMessage.ReceiverAccountNotFound;
                 TransactionActorRecord debitFrom = new TransactionActorRecord(record, userType.SENDER);
                 debitFrom.setRemainingBalance(sender.getBalance());
                 transactions.add(debitFrom);
             }
 
         } else {
-            record.status = "Failed - Insufficient fund";
+            record.status = transactionMessage.InsufficientFundSenderRecord;
             System.out.println("Failed - Insufficient fund");
             TransactionActorRecord debitFrom = new TransactionActorRecord(record, userType.SENDER);
             debitFrom.setRemainingBalance(sender.getBalance());
@@ -88,12 +88,12 @@ public class bankingOperations implements Approve_Loan, Serializable {
             System.out.println("Loan approved");
             double approvedLoan = cactive.getBalance() * 1.5;
 
-            Transaction tRecord = new Transaction(TransactionID++);
+            Transaction tRecord = new Transaction();
 
             tRecord.amount = approvedLoan;
             tRecord.debitFrom = 8888; //branch bank account number
             tRecord.creditTo = cactive.getAccNo();
-            tRecord.status = " Loan approved Successful";
+            tRecord.status = transactionMessage.LoanApproved;
 
 
             TransactionActorRecord creditTo = new TransactionActorRecord(tRecord, userType.RECEIVER);
@@ -117,12 +117,12 @@ public class bankingOperations implements Approve_Loan, Serializable {
             System.out.println("Loan approved");
             double approvedLoan = cactive.getBalance() * 3;
 
-            Transaction tRecord = new Transaction(TransactionID++);
+            Transaction tRecord = new Transaction();
 
             tRecord.amount = approvedLoan;
             tRecord.debitFrom = 8888; //branch bank account number
             tRecord.creditTo = cactive.getAccNo();
-            tRecord.status = "Loan approved Successful";
+            tRecord.status = transactionMessage.LoanApproved;
 
 
             TransactionActorRecord creditTo = new TransactionActorRecord(tRecord, userType.RECEIVER);
@@ -185,7 +185,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
     public void adminTransferMoney(){
 
         if (UserOperations.Aactive.authorised == 1) {
-            Transaction record = new Transaction(TransactionID++);
+            Transaction record = new Transaction();
 
             System.out.print("Enter Debit From Account number : ");
             record.debitFrom = UserOperations.scanner.nextInt();
@@ -228,7 +228,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
                     debitRec.setRemainingBalance(debitFrom.updateBalance(record.amount, '-'));
                     creditRec.setRemainingBalance(creditTo.updateBalance(record.amount, '+'));
 
-                    record.status = "Successful";
+                    record.status = transactionMessage.TransferSuccessful;
 
                     System.out.println("Money transfer successfully");
 
@@ -236,7 +236,8 @@ public class bankingOperations implements Approve_Loan, Serializable {
                     debitRec.setRemainingBalance(debitFrom.getBalance());
                     creditRec.setRemainingBalance(creditTo.getBalance());
 
-                    record.status = "Sender : insufficient fund";
+                    record.status = transactionMessage.InsufficientFund;
+                    System.out.println("Sender : insufficient fund");
                 }
 
                 transactions.add(debitRec);
@@ -246,7 +247,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
                 TransactionActorRecord debitRec = new TransactionActorRecord(record, userType.SENDER);
                 debitRec.setRemainingBalance(debitFrom.getBalance());
-                record.status = "Receiver account not found";
+                record.status = transactionMessage.ReceiverAccountNotFound;
 
                 System.out.println("Receiver account not found");
                 transactions.add(debitRec);
@@ -255,7 +256,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
                 TransactionActorRecord creditRec = new TransactionActorRecord(record, userType.RECEIVER);
                 creditRec.setRemainingBalance(creditTo.getBalance());
-                record.status = "Sender account not found";
+                record.status = transactionMessage.SenderAccountNotFound;
 
                 System.out.println("Sender account not found");
                 transactions.add(creditRec);
@@ -263,7 +264,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
             } else {
                 TransactionActorRecord TArec = new TransactionActorRecord(record, userType.NONE);
                 TArec.setRemainingBalance(0);
-                record.status = "Receiver & Sender acc not found";
+                record.status = transactionMessage.BothAccountNotFound;
 
                 System.out.println("Receiver & Sender acc not found");
                 transactions.add(TArec);
@@ -276,7 +277,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
     public void addMoney() {
         if (UserOperations.Aactive.authorised == 1) {
-            Transaction record = new Transaction(TransactionID++);
+            Transaction record = new Transaction();
 
             record.debitFrom = 8888;
 
@@ -308,7 +309,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
                 creditRec.setRemainingBalance(creditTo.updateBalance(record.amount, '+'));
 
-                record.status = "Successful";
+                record.status = transactionMessage.MoneyDeposited;
 
                 System.out.println("Money added successfully");
 
@@ -319,7 +320,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
                 TransactionActorRecord Rec = new TransactionActorRecord(record, userType.NONE);
                 Rec.setRemainingBalance(0);
-                record.status = "Receiver account not found";
+                record.status = transactionMessage.ReceiverAccountNotFound;
 
                 System.out.println("Receiver account not found");
                 transactions.add(Rec);
@@ -332,7 +333,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
     public void WithdrawMoney() {
         if (UserOperations.Aactive.authorised == 1) {
-            Transaction record = new Transaction(TransactionID++);
+            Transaction record = new Transaction();
 
             System.out.print("Enter Debit From Account number : ");
             record.debitFrom = UserOperations.scanner.nextInt();
@@ -366,7 +367,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
                     debitRec.setRemainingBalance(debitFrom.updateBalance(record.amount, '-'));
 
-                    record.status = "money withdrawal Successful";
+                    record.status = transactionMessage.MoneyWithdrawal;
 
                     System.out.println("Money withdraw successfully");
 
@@ -375,7 +376,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
 
                     debitRec.setRemainingBalance(debitFrom.getBalance());
 
-                    record.status = "Sender : insufficient fund";
+                    record.status = transactionMessage.InsufficientFundSenderRecord;
                     System.out.println("Sender : insufficient fund");
                 }
 
@@ -386,7 +387,7 @@ public class bankingOperations implements Approve_Loan, Serializable {
             else {
                 TransactionActorRecord TArec = new TransactionActorRecord(record, userType.NONE);
                 TArec.setRemainingBalance(0);
-                record.status = "withdrawal acc not found";
+                record.status = transactionMessage.SenderAccountNotFound;
 
                 System.out.println("Withdrawal acc not found");
                 transactions.add(TArec);

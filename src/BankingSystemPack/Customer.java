@@ -21,6 +21,14 @@ public class Customer extends User implements Calculate_interest, Serializable {
         this.balance = balance;
     }
 
+    public Customer(String username, String password, String name, userType utype,accType atype,double balance,int accNo){
+        super(username,password,name,utype);
+        this.acc_type = atype;
+        this.balance = balance;
+        this.accNo = accNo;
+        ++UserOperations.AccountNo;
+    }
+
     public double getBalance() {return this.balance;}
 
     public int getAccNo() {return this.accNo;}

@@ -14,13 +14,258 @@ public class UserOperations {
     public static Customer Cactive;
     public static Admin Aactive;
 
-    private static String AdminKey = "Admin@123";
     public static int AccountNo = 1000;
     public static int LoanNo = 100;
 
     public static bankingOperations bank = new bankingOperations();
 
+    public static void writeUser(){
+        System.out.println("Writing CSV files call");
 
+        //Writing users to users.csv
+        for (Map.Entry<String, User> entry : UserOperations.users.entrySet()) {
+
+            User user = entry.getValue();
+            writeUserToCSV(user);
+        }
+        System.out.println("USer CSV file written successfully!");
+
+        //Writing transactions to transactions.csv
+        FileWriter writer = null;
+        try {
+            String csvFile = "transactions.csv";
+            writer = new FileWriter(csvFile, true);
+
+
+            for(int i=0;i< bank.transactions.size();i++){
+
+                TransactionActorRecord record = bank.transactions.get(i);
+
+                transactionMessage msg = record.rec.status;
+
+                if(msg == transactionMessage.TransferSuccessful || msg == transactionMessage.InsufficientFund){
+                    i++;
+                    writeTransactionToCSV(record,bank.transactions.get(i), writer);
+                }
+                else
+                    writeTransactionToCSV(record, writer);
+
+            }
+
+        }
+        catch (IOException e) {
+            System.out.println("Error writing Transaction CSV file: " + e.getMessage());
+        }
+        finally {
+            try {
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("Error closing file Transaction writer: " + e.getMessage());
+            }
+        }
+
+
+    }
+
+    public static void writeUserToCSV(User user) {
+        String csvFile = "users.csv";
+        FileWriter writer = null;
+
+        //Writing DATA
+        try {
+            writer = new FileWriter(csvFile,true);
+
+            //Writing DATA
+            if (user instanceof Admin) {
+                writer.append(user.getUsername());
+                writer.append(",");
+                writer.append(user.getPassword());
+                writer.append(",");
+                writer.append(user.getFullname());
+                writer.append(",");
+                writer.append(user.getUserType().toString());
+                writer.append(",");
+                writer.append(String.valueOf(((Admin) user).authorised));
+                writer.append("\n");
+            }
+            else{
+
+                writer.append(user.getUsername());
+                writer.append(",");
+                writer.append(user.getPassword());
+                writer.append(",");
+                writer.append(user.getFullname());
+                writer.append(",");
+                writer.append(user.getUserType().toString());
+                writer.append(",");
+
+
+                Customer cust = (Customer)user;
+
+                writer.append(cust.getAccType().toString());
+                writer.append(",");
+
+                writer.append(Integer.toString(cust.getAccNo()));
+                writer.append(",");
+
+                writer.append(Double.toString(cust.getBalance()));
+                writer.append("\n");
+
+            }
+
+        }
+        catch (IOException e) {
+            System.out.println("Error writing USER CSV file: " + e.getMessage());
+        }
+        finally {
+            try {
+                writer.flush();
+                writer.close();
+            }
+            catch (IOException e) {
+                System.out.println("Error closing file USER writer: " + e.getMessage());
+            }
+        }
+    }
+
+    public static void writeTransactionToCSV(TransactionActorRecord TARecord,FileWriter writer) {
+
+        try {
+
+            writer.append(String.valueOf(TARecord.rec.status));
+            writer.append(",");
+
+            writer.append(String.valueOf(TARecord.rec.transactionID));
+            writer.append(",");
+            writer.append(String.valueOf(TARecord.rec.debitFrom));
+            writer.append(",");
+            writer.append(String.valueOf(TARecord.rec.creditTo));
+            writer.append(",");
+            writer.append(String.valueOf(TARecord.rec.amount));
+            writer.append(",");
+
+            writer.append(TARecord.type.toString());
+            writer.append(",");
+            writer.append(String.valueOf(TARecord.remainingBalance));
+            writer.append("\n");
+
+
+        }
+        catch (IOException e) {
+            System.out.println("Error writing Transaction CSV file: " + e.getMessage());
+        }
+
+    }
+
+    public static void writeTransactionToCSV(TransactionActorRecord TARecord1,TransactionActorRecord TARecord2,FileWriter writer) {
+
+        try {
+
+            writer.append(String.valueOf(TARecord1.rec.status));
+            writer.append(",");
+
+            writer.append(String.valueOf(TARecord1.rec.transactionID));
+            writer.append(",");
+            writer.append(String.valueOf(TARecord1.rec.debitFrom));
+            writer.append(",");
+            writer.append(String.valueOf(TARecord1.rec.creditTo));
+            writer.append(",");
+            writer.append(String.valueOf(TARecord1.rec.amount));
+            writer.append(",");
+
+            writer.append(TARecord2.type.toString());
+            writer.append(",");
+            writer.append(String.valueOf(TARecord2.remainingBalance));
+            writer.append(",");
+
+            writer.append(TARecord2.type.toString());
+            writer.append(",");
+            writer.append(String.valueOf(TARecord2.remainingBalance));
+            writer.append("\n");
+
+
+        }
+        catch (IOException e) {
+            System.out.println("Error writing Transaction CSV file: " + e.getMessage());
+        }
+
+    }
+
+
+    public static void CSVReader(){
+
+        //Reading User from the user.csv
+        try {
+
+            File file = new File("users.csv");
+
+            if (!file.exists()) {
+                try {
+                    // Create a new file
+                    file.createNewFile();
+                    System.out.println("File created successfully.");
+                } catch (IOException e) {
+                    System.out.println("An error occurred while creating the file: " + e.getMessage());
+                }
+            }
+
+            BufferedReader br = new BufferedReader(new FileReader("users.csv"));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                String[] fields = line.split(",");
+                String username = fields[0];
+                String password = fields[1];
+                String name = fields[2];
+                userType userType = BankingSystemPack.userType.valueOf(fields[3]);
+
+                if (userType == userType.ADMIN) {
+                    int authorised = Integer.parseInt(fields[4]);
+                    users.put(username, new Admin(username, password, name, userType, authorised));
+                } else {
+                    accType accType = BankingSystemPack.accType.valueOf(fields[4]);
+                    int accNo = Integer.parseInt(fields[5]);
+                    double balance = Double.parseDouble(fields[6]);
+                    users.put(username, new Customer(username, password, name, userType, accType, balance,accNo));
+                }
+            }
+            System.out.println("CSV file read successfully!");
+
+            //close the file
+            {try {
+                if (br != null) {
+                    br.close();
+                }
+            }
+            catch (IOException e) {
+                System.out.println("Error closing file reader: " + e.getMessage());
+            }
+            }
+
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("CSV file not found: " + e.getMessage());
+
+        }
+        catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+        finally {
+            File file = new File("users.csv");
+            if (file.delete()) {
+                System.out.println("File deleted successfully");
+            } else {
+                System.out.println("Failed to delete the file");
+            }
+
+        }
+
+
+
+
+    }
 
     public static void register() {
 
