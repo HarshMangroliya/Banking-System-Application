@@ -5,53 +5,53 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-
 public class UserOperations {
-
     public static Scanner scanner = new Scanner(System.in);
 
+    // hashmap for storing the users
     public static HashMap<String, User> users = new HashMap<>();
+
+    // Customer object for current active customer
     public static Customer Cactive;
+
+    // Admin object for current active admin
     public static Admin Aactive;
 
+    // starting value for account numbers
     public static int AccountNo = 1000;
+
+    // starting values for loan numbers
     public static int LoanNo = 100;
 
+    // object for bankingOperations class
     public static bankingOperations bank = new bankingOperations();
 
-    public static void writeUser(){
+    // method for writing user and user transactions to a .csv file
+    public static void writeUser() {
         System.out.println("Writing data to CSV files");
 
-        //Writing users to users.csv
+        // writing users to users.csv
         for (Map.Entry<String, User> entry : UserOperations.users.entrySet()) {
-
             User user = entry.getValue();
             writeUserToCSV(user);
         }
-        System.out.println("USers.csv file written successfully!");
+        System.out.println("Users.csv file written successfully!");
 
-        //Writing transactions to transactions.csv
+        // writing transactions to transactions.csv
         FileWriter writer = null;
         try {
             String csvFile = "transactions.csv";
             writer = new FileWriter(csvFile, true);
-
-
             for(int i=0;i< bank.transactions.size();i++){
-
                 TransactionActorRecord record = bank.transactions.get(i);
-
                 transactionMessage msg = record.rec.status;
-
                 if(msg == transactionMessage.TransferSuccessful || msg == transactionMessage.InsufficientFund){
                     i++;
                     writeTransactionToCSV(record,bank.transactions.get(i), writer);
                 }
                 else
                     writeTransactionToCSV(record, writer);
-
             }
-
         }
         catch (IOException e) {
             System.out.println("Error writing Transaction CSV file: " + e.getMessage());
@@ -65,19 +65,16 @@ public class UserOperations {
             }
         }
         System.out.println("Transactions.csv file written successfully!");
-
-
     }
 
+    // writing user details to a .csv file
     public static void writeUserToCSV(User user) {
         String csvFile = "users.csv";
         FileWriter writer = null;
 
-        //Writing DATA
+        // writing user details
         try {
             writer = new FileWriter(csvFile,true);
-
-            //Writing DATA
             if (user instanceof Admin) {
                 writer.append(user.getUsername());
                 writer.append(",");
@@ -91,7 +88,6 @@ public class UserOperations {
                 writer.append("\n");
             }
             else{
-
                 writer.append(user.getUsername());
                 writer.append(",");
                 writer.append(user.getPassword());
@@ -101,42 +97,35 @@ public class UserOperations {
                 writer.append(user.getUserType().toString());
                 writer.append(",");
 
-
+                // object for user-type: customer
                 Customer cust = (Customer)user;
-
                 writer.append(cust.getAccType().toString());
                 writer.append(",");
-
                 writer.append(Integer.toString(cust.getAccNo()));
                 writer.append(",");
-
                 writer.append(Double.toString(cust.getBalance()));
                 writer.append("\n");
-
             }
-
         }
         catch (IOException e) {
             System.out.println("Error writing USER CSV file: " + e.getMessage());
         }
         finally {
-            try {
-                writer.flush();
-                writer.close();
-            }
-            catch (IOException e) {
-                System.out.println("Error closing file USER writer: " + e.getMessage());
-            }
+                try {
+                    writer.flush();
+                    writer.close();
+                }
+                catch (IOException e) {
+                    System.out.println("Error closing file USER writer: " + e.getMessage());
+                }
         }
     }
 
-    public static void writeTransactionToCSV(TransactionActorRecord TARecord,FileWriter writer) {
-
+    // method for writing transaction details to a .csv file
+    public static void writeTransactionToCSV(TransactionActorRecord TARecord, FileWriter writer) {
         try {
-
             writer.append(String.valueOf(TARecord.rec.status));
             writer.append(",");
-
             writer.append(String.valueOf(TARecord.rec.transactionID));
             writer.append(",");
             writer.append(String.valueOf(TARecord.rec.debitFrom));
@@ -145,27 +134,21 @@ public class UserOperations {
             writer.append(",");
             writer.append(String.valueOf(TARecord.rec.amount));
             writer.append(",");
-
             writer.append(TARecord.type.toString());
             writer.append(",");
             writer.append(String.valueOf(TARecord.remainingBalance));
             writer.append("\n");
-
-
         }
         catch (IOException e) {
             System.out.println("Error writing Transaction CSV file: " + e.getMessage());
         }
-
     }
 
-    public static void writeTransactionToCSV(TransactionActorRecord TARecord1,TransactionActorRecord TARecord2,FileWriter writer) {
-
+    // method for writing transaction details to a .csv file
+    public static void writeTransactionToCSV(TransactionActorRecord TARecord1, TransactionActorRecord TARecord2, FileWriter writer) {
         try {
-
             writer.append(String.valueOf(TARecord1.rec.status));
             writer.append(",");
-
             writer.append(String.valueOf(TARecord1.rec.transactionID));
             writer.append(",");
             writer.append(String.valueOf(TARecord1.rec.debitFrom));
@@ -174,35 +157,28 @@ public class UserOperations {
             writer.append(",");
             writer.append(String.valueOf(TARecord1.rec.amount));
             writer.append(",");
-
             writer.append(TARecord1.type.toString());
             writer.append(",");
             writer.append(String.valueOf(TARecord1.remainingBalance));
             writer.append(",");
-
             writer.append(TARecord2.type.toString());
             writer.append(",");
             writer.append(String.valueOf(TARecord2.remainingBalance));
             writer.append("\n");
-
-
         }
         catch (IOException e) {
             System.out.println("Error writing Transaction CSV file: " + e.getMessage());
         }
-
     }
 
+    // method for reading the data from .csv file
     public static void CSVReader(){
-
-        //Reading from the user.csv
         try {
-
+            // creating a file object for users.csv file
             File file = new File("users.csv");
-
+            // creating a new file is it does not exist
             if (!file.exists()) {
                 try {
-                    // Create a new file
                     file.createNewFile();
                     System.out.println("File created successfully.");
                 } catch (IOException e) {
@@ -210,17 +186,19 @@ public class UserOperations {
                 }
             }
 
+            // creating a buffer reader object to read data from the users.csv file
             BufferedReader br = new BufferedReader(new FileReader("users.csv"));
             String line;
 
+            // while loop for reading each row in the file
             while ((line = br.readLine()) != null) {
-
                 String[] fields = line.split(",");
                 String username = fields[0];
                 String password = fields[1];
                 String name = fields[2];
                 userType userType = BankingSystemPack.userType.valueOf(fields[3]);
 
+                // assigning authorization value to the admin
                 if (userType == userType.ADMIN) {
                     int authorised = Integer.parseInt(fields[4]);
                     users.put(username, new Admin(username, password, name, userType, authorised));
@@ -228,26 +206,27 @@ public class UserOperations {
                     accType accType = BankingSystemPack.accType.valueOf(fields[4]);
                     int accNo = Integer.parseInt(fields[5]);
                     double balance = Double.parseDouble(fields[6]);
-                    users.put(username, new Customer(username, password, name, userType, accType, balance,accNo));
+
+                    // adding the suer details to the users hashmap at the runtime
+                    users.put(username, new Customer(username, password, name, userType, accType, balance, accNo));
                 }
             }
-            System.out.println("users CSV file read successfully!");
+            System.out.println("Users CSV file read successfully!");
 
-            //close the file
-            {try {
-                if (br != null) {
-                    br.close();
+            // closing the file buffer reader
+            {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                }
+                catch (IOException e) {
+                    System.out.println("Error closing file reader: " + e.getMessage());
                 }
             }
-            catch (IOException e) {
-                System.out.println("Error closing file reader: " + e.getMessage());
-            }
-            }
-
         }
         catch (FileNotFoundException e) {
-            System.out.println("users CSV file not found: " + e.getMessage());
-
+            System.out.println("Users CSV file not found: " + e.getMessage());
         }
         catch (IOException e) {
             System.out.println("Error reading CSV file: " + e.getMessage());
@@ -255,21 +234,19 @@ public class UserOperations {
         finally {
             File file = new File("users.csv");
             if (file.delete()) {
-                System.out.println("users.csv File deleted successfully");
+                System.out.println("Users.csv File deleted successfully");
             } else {
-                System.out.println("users.csv Failed to delete the file");
+                System.out.println("Users.csv Failed to delete the file");
             }
-
         }
 
-        //Reading from the transactions.csv
+        // reading data from the transactions.csv file
         try {
-
+            // creating a file object for transactions.csv file
             File file = new File("transactions.csv");
-
             if (!file.exists()) {
                 try {
-                    // Create a new file
+                    // create a new file if it does not exist
                     file.createNewFile();
                     System.out.println("File created successfully.");
                 } catch (IOException e) {
@@ -277,35 +254,34 @@ public class UserOperations {
                 }
             }
 
+            // creating a buffer reader for reading data from transactions.csv file
             BufferedReader br = new BufferedReader(new FileReader("transactions.csv"));
             String line;
 
+            // reading all the data from the transactions.csv file
             while ((line = br.readLine()) != null) {
-
                 String[] data = line.split(",");
-
                 transactionMessage msg = transactionMessage.valueOf(data[0]);
-
                 int transactionID = Integer.parseInt(data[1]);
                 int debitFrom = Integer.parseInt(data[2]);
                 int creditTo = Integer.parseInt(data[3]);
                 double amount = Double.parseDouble(data[4]);
 
-                Transaction rec = new Transaction(transactionID,debitFrom,creditTo,amount,msg);
+                // creating a new transaction class object for storing the transaction details read from the file
+                Transaction rec = new Transaction(transactionID, debitFrom, creditTo, amount, msg);
 
                 if(msg == transactionMessage.TransferSuccessful || msg == transactionMessage.InsufficientFund){
                     userType sender = userType.valueOf(data[5]);
                     double senderBalance = Double.parseDouble(data[6]);
-                    TransactionActorRecord obj = new TransactionActorRecord(rec,sender);
+                    TransactionActorRecord obj = new TransactionActorRecord(rec, sender);
                     obj.setRemainingBalance(senderBalance);
                     bank.transactions.add(obj);
 
                     userType receiver = userType.valueOf(data[7]);
                     double receiverBalance = Double.parseDouble(data[8]);
-                    TransactionActorRecord obj2 = new TransactionActorRecord(rec,receiver);
+                    TransactionActorRecord obj2 = new TransactionActorRecord(rec, receiver);
                     obj.setRemainingBalance(receiverBalance);
                     bank.transactions.add(obj2);
-
                 }
                 else {
                     userType actor = userType.valueOf(data[5]);
@@ -314,49 +290,48 @@ public class UserOperations {
                     obj.setRemainingBalance(remainingBalance);
                     bank.transactions.add(obj);
                 }
-
             }
             System.out.println("CSV file read successfully!");
 
-            //close the file
-            {try {
-                if (br != null) {
-                    br.close();
+            // closing the file buffer reader
+            {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                }
+                catch (IOException e) {
+                    System.out.println("Error closing file reader: " + e.getMessage());
                 }
             }
-            catch (IOException e) {
-                System.out.println("Error closing file reader: " + e.getMessage());
-            }
-            }
-
         }
         catch (FileNotFoundException e) {
-            System.out.println("transactions CSV file not found: " + e.getMessage());
-
+            System.out.println("Transactions CSV file not found: " + e.getMessage());
         }
         catch (IOException e) {
             System.out.println("Error reading transactions CSV file: " + e.getMessage());
         }
         finally {
             File file = new File("transactions.csv");
-
             if (file.delete()) {
-                System.out.println("transactions.csv File deleted successfully");
+                System.out.println("Transactions.csv File deleted successfully");
             } else {
-                System.out.println("transactions.csv Failed to delete the file");
+                System.out.println("Transactions.csv Failed to delete the file");
             }
-
         }
-
     }
 
+    // method for registering a user
     public static void register() {
-
         boolean f = true;
         while(f){
-
             int choice;
-            System.out.println("Register as : \n1)Customer \n2)Admin \n3)Exit");
+            System.out.println("\n");
+            System.out.println( "Register as : \n" +
+                                "1)Customer \n" +
+                                "2)Admin \n" +
+                                "3)Exit");
+
             System.out.print("Enter your choice : ");
             choice = scanner.nextInt();
 
@@ -387,13 +362,14 @@ public class UserOperations {
                     String password1 = null, password2 = null;
                     boolean f1 = true;
                     while (f1) {
-                        //uncomment the following lines for running in intelliJ IDEA
+
+                        // uncomment the following lines for running in intelliJ IDEA
                         System.out.print("Enter your password: ");
                         password1 = scanner.next();
                         System.out.print("Re-enter your password: ");
                         password2 = scanner.next();
 
-                        //uncomment the following lines for running in VS Code
+                        // uncomment the following lines for running in VS Code
                         //Console cnsl = System.console();
                         //if(cnsl == null) {
                         //    System.out.println("No console available.");
@@ -412,7 +388,7 @@ public class UserOperations {
                     boolean flag = true;
                     while(flag){
                         int tmp;
-                        System.out.print("Type of account ? \n(Saving: 0 / Current: 1) : ");
+                        System.out.print("Type of account ? \n(Saving: 0, Current: 1) : ");
                         tmp = scanner.nextInt();
 
                         if (tmp == 0) {
@@ -426,15 +402,12 @@ public class UserOperations {
                             System.out.println("Invalid choice for type of account");
                         }
                     }
-
-
                     UserOperations.users.put(username, user);
                     System.out.println("\nUser registered successfully.");
                     break;
                 }
 
                 case 2:{
-
                     System.out.print("\nEnter your full name: ");
                     String fname = null, lname = null;
                     fname = scanner.next();
@@ -460,13 +433,13 @@ public class UserOperations {
                     String password1 = null, password2 = null;
                     boolean f1 = true;
                     while (f1) {
-                        //uncomment the following lines for running in intelliJ IDEA
+                        // uncomment the following lines for running in intelliJ IDEA
                         System.out.print("Enter your password: ");
                         password1 = scanner.next();
                         System.out.print("Re-enter your password: ");
                         password2 = scanner.next();
 
-                        //uncomment the following lines for running in VS Code
+                        // uncomment the following lines for running in VS Code
                         //Console cnsl = System.console();
                         //if(cnsl == null) {
                         //    System.out.println("No console available.");
@@ -496,7 +469,7 @@ public class UserOperations {
 
                         String adminKey = "Admin@123";
                         if(key.equals(adminKey)){
-                            UserOperations.users.put(username, new Admin(username, password1, fullname,userType.ADMIN,0));
+                            UserOperations.users.put(username, new Admin(username, password1, fullname, userType.ADMIN,1));
                             System.out.println("\nAdmin registered successfully.");
                             break;
                         }
@@ -505,20 +478,17 @@ public class UserOperations {
                     }
                     break;
                 }
-
                 case 3:{
                     f = false;
                     break;
                 }
-
                 default:
                     System.out.println("Please Enter valid choice !");
             }
-
         }
-
     }
 
+    // method for resetting the user password
     public static boolean resetPassword() {
         System.out.print("\nEnter your fullname: ");
         String fname = null , lname = null;
@@ -533,14 +503,14 @@ public class UserOperations {
         if (user != null && user.getUsername().equals(username) && user.getFullname().equals(fullname)) {
             boolean flag = true;
             while(flag) {
-                //uncomment the following lines for running in intelliJ IDEA
+                // uncomment the following lines for running in intelliJ IDEA
                 System.out.print("Enter your new password: ");
                 String password1 = scanner.next();
                 System.out.print("Re-enter your new password: ");
                 String password2 = scanner.next();
 
 
-                //uncomment the following lines for running in VS Code
+                // uncomment the following lines for running in VS Code
                 /*//Console cnsl = System.console();
                 //if(cnsl == null) {
                 //    System.out.println("No console available.");
@@ -561,30 +531,26 @@ public class UserOperations {
             }
             return true;
         }
-
         System.out.println("\nNo such user exists.");
-
         return false;
     }
 
+    // method for user login
     public static boolean login() {
-
-
         System.out.print("\nEnter your username: ");
         String username = scanner.next();
 
-        //uncomment the following lines for running in intelliJ IDEA
+        // uncomment the following lines for running in intelliJ IDEA
         System.out.print("Enter your password: ");
         String password = scanner.next();
 
+        // uncomment the following lines for running in VS Code
+        /*  Console cnsl = System.console();
+        if(cnsl == null)
+        System.out.println("No console available.");
 
-        //uncomment the following lines for running in VS Code
-                        /*  Console cnsl = System.console();
-                        if(cnsl == null)
-                            System.out.println("No console available.");
-
-                        char[] passwd = cnsl.readPassword("Enter password: ");
-                        String password = new String(passwd);*/
+        char[] passwd = cnsl.readPassword("Enter password: ");
+        String password = new String(passwd);*/
 
         User user = UserOperations.users.get(username);
         if (user != null && user.getPassword().equals(password) ){
@@ -598,15 +564,13 @@ public class UserOperations {
         else {
             System.out.println("\nLogin failed. Invalid username or password.");
         }
-
         return false;
     }
 
+    // method for user logout
     public static boolean logout() {
-
             UserOperations.Aactive = null;
             UserOperations.Cactive = null;
         return true;
     }
-
 }

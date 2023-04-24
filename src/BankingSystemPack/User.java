@@ -10,6 +10,7 @@ public class User {
         super();
     }
 
+    // constructor for setting the values for current user
     User(String username, String password, String name, userType utype) {
         this.username = username;
         this.password = password;
